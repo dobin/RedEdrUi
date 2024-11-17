@@ -13,12 +13,14 @@ def index():
 
 @app.route('/api/events', methods=['GET', 'POST'])
 def api_events():
-
-    # return json in data/notepad.json
+    # Load JSON data from file
     with open('data/notepad.json') as f:
         data = json.load(f)
-
-    response = make_response(jsonify(data))
+    
+    json_data = json.dumps(data, indent=4)  # Convert to JSON string with indentation for readability
+    response = make_response(json_data)
+    response.headers['Content-Type'] = 'application/json'
+    
     return response
 
 @app.route('/api/detections', methods=['GET', 'POST'])
