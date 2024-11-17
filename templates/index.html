@@ -32,7 +32,7 @@
 <div class="tabs">
     <div class="tab active" onclick="showContent('tab1', this)">Events</div>
     <div class="tab" onclick="showContent('tab2', this)">Analyzer</div>
-    <div class="tab" onclick="showContent('tab3', this)">Stderr</div>
+    <div class="tab" onclick="showContent('tab3', this)">Recordings</div>
 </div>
 
 <div class="content" id="content">
@@ -43,7 +43,7 @@
         <div id="detectionContainer"></div>
     </div>
     <div id="tab3" class="tab-content"  style="display: none;">
-        loading...
+        <div id="recordingsContainer"></div>
     </div>
 </div>
 
@@ -75,6 +75,21 @@
         }
     }
 
+    function showRecordings(data) {
+        const container = document.getElementById('recordingsContainer');
+        container.innerHTML = '';
+
+        data.forEach(recording => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <div class="recording">
+                    <a href="/recordings?name=${recording}" target="_blank">${recording}</a> <br>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
     async function fetchEvents() {
         const response = await fetch('/api/events');
         if (!response.ok) {
@@ -102,7 +117,6 @@
 
         // Check if we need to update something
         if(data.events_count > MyData.stats.events_count) {
-            console.log("Update");
             fetchEvents();
             fetchDetections();
         
@@ -113,6 +127,15 @@
             document.getElementById('stats-counter').textContent = `Events: ${data.events_count}`;
             document.getElementById('detections-counter').textContent = `Detections: ${data.detections_count}`;
         }
+    }
+
+    async function fetchRecordings() {
+        const response = await fetch('/api/recordings');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        showRecordings(data);
     }
 
     async function sendSave() {
@@ -151,6 +174,8 @@
     showContent('tab1', null);  // show first tab
     fetchStats(); // initial fetch
     setInterval(fetchStats, 1 * 1000); // periodic check
+
+    fetchRecordings();
 </script>
 
 </body>
