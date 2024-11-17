@@ -1,60 +1,104 @@
-from flask import Flask, render_template, jsonify, make_response
-
+from flask import Flask, render_template, jsonify, make_response, send_from_directory
+import os
 import random
 import json
 
 app = Flask(__name__)
 
+FILENAME = "data/examplemalware-1.events.json"
+FILENAME_DET = "data/examplemalware-1.detections.json"
+
+
+# Static (reused by RedEdr.exe)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+@app.route('/recordings')
+def recordings():
+    return render_template('recording.html')
+
+@app.route('/static/<path>')
+def send_static(path):
+    return send_from_directory('templates', path)
+
+
+# API (to be implemented by RedEdr.exe)
 
 @app.route('/api/events', methods=['GET', 'POST'])
 def api_events():
-    # Load JSON data from file
-    with open('data/notepad.json') as f:
+    with open(FILENAME) as f:
         data = json.load(f)
-    
-    json_data = json.dumps(data, indent=4)  # Convert to JSON string with indentation for readability
+    json_data = json.dumps(data, indent=4)
     response = make_response(json_data)
     response.headers['Content-Type'] = 'application/json'
-    
     return response
+
 
 @app.route('/api/detections', methods=['GET', 'POST'])
 def api_detections():
-    # Sample JSON data
-    data = [
-        "aaaa",
-        "bbbb",
-    ]
+    with open(FILENAME_DET) as f:
+        data = json.load(f)
+    json_data = json.dumps(data, indent=4)
+    response = make_response(json_data)
+    response.headers['Content-Type'] = 'application/json'
     response = make_response(jsonify(data))
     return response
 
 
-@app.route('/api/stats', methods=['GET', 'POST'])
+@app.route('/api/stats')
 def api_stats():
-    #data = {
-    #    "events": random.randint(1, 100),
-    #    "users": random.randint(1, 100),
-    #}
-    #response = make_response(jsonify(data))
-    data = "Stat1: 1234 <br>  Stat2: 4444"
-    response = make_response(data)
+    data = {
+        "events_count": random.randint(1, 100),
+        "detections_count": 42,
+    }
+    response = make_response(jsonify(data))
     return response
 
 
-@app.route('/api/reset', methods=['GET', 'POST'])
+@app.route('/api/reset')
 def api_reset():
-    #data = {
-    #    "events": random.randint(1, 100),
-    #    "users": random.randint(1, 100),
-    #}
-    #response = make_response(jsonify(data))
-    data = "ok"
-    response = make_response(data)
+    data = {
+        "result": "ok",
+    }
+    response = make_response(jsonify(data))
+    return response
+
+
+@app.route('/api/save')
+def api_save():
+    data = {
+        "result": "ok",
+    }
+    response = make_response(jsonify(data))
+    return response
+
+
+def getRecordingsNames(directory):
+    try:
+        return [f[:f.index(".")] for f in os.listdir(directory) if f.endswith('.events.json')]
+    except FileNotFoundError:
+        print(f"Directory '{directory}' not found.")
+        return []
+    except PermissionError:
+        print(f"Permission denied to access '{directory}'.")
+        return []
+
+
+@app.route('/api/recordings')
+def api_recordings():
+    recordings = getRecordingsNames("data")
+    response = make_response(jsonify(recordings))
+    return response
+
+
+@app.route('/api/recordings/<recordingname>')
+def api_recording(recordingname):
+    with open(f"data/{recordingname}.events.json") as f:
+        data = json.load(f)
+    json_data = json.dumps(data, indent=4)
+    response = make_response(json_data)
     return response
 
 
