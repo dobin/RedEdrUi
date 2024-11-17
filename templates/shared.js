@@ -8,34 +8,37 @@
             const eventDiv = document.createElement('div');
             eventDiv.classList.add('event');
 
+            let eventTitle = '';
+            let eventHeader = '';
             let eventDetails = '';
+            let eventCallstack = '';
             for (const [key, value] of Object.entries(event)) {
-                let formattedKeyValue;
-
+                // header
                 if (key === 'type' || key === 'time' || key === 'pid' || key === 'tid' || key === 'krn_pid') {
-                    formattedKeyValue = `<span class="highlight_a">${key}:`;
+                    eventHeader += `<span class="highlight_a">${key}:${value}</span>&nbsp`;
                 } else if (key === 'func' || key === 'callback') {
-                    formattedKeyValue = `<span class="highlight_b">${key}:`;
+                    eventTitle += `<span class="highlight_b"><b>${value}</b></span>&nbsp;&nbsp;`;
+
+                // callstack
+                } else if (key == 'callstack') { 
+                    eventCallstack = '<span class="highlight_d">callstack:<br>' + JSON.stringify(value, null, 0) + "</span>";
+
+                // important
                 } else if (key === 'addr') {
-                    formattedKeyValue = `<span class="highlight_c">${key}:`;
+                    eventDetails += `<b>${key}:${value}</b>&nbsp;&nbsp;`;
                 } else if (key === 'protect') {
-                    formattedKeyValue = `<span class="highlight_d">${key}:`;
-                } else {
-                    formattedKeyValue = `<span>${key}:`;
-                }
+                    eventDetails += `<b>${key}:${value}</b>&nbsp;&nbsp;`;
+                } else if (key === 'handle' && value != "FFFFFFFFFFFFFFFF") {
+                    eventDetails += `<b>${key}:${value}</b>&nbsp;&nbsp;`;
 
-                if (key == 'callstack') { 
-                    formattedKeyValue = "<br>" + formattedKeyValue + "<br>";
-                    formattedKeyValue += JSON.stringify(value, null, 0) + "</span>";
+                // rest
                 } else {
-                    formattedKeyValue += `${value}</span>`;
+                    eventDetails += `<span class="highlight_c">${key}:${value}</span>&nbsp;&nbsp;`;
                 }
-
-                eventDetails += `${formattedKeyValue}; `;
             }
 
-            eventDiv.innerHTML = eventDetails; // Set the inner HTML to the details
-            eventContainer.appendChild(eventDiv); // Add the event div to the container
+            eventDiv.innerHTML = eventTitle + eventHeader + "<br>" + eventDetails + "<br>" + eventCallstack;
+            eventContainer.appendChild(eventDiv);
         });
     }
     

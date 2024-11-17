@@ -46,22 +46,22 @@ header {
 }
 
 .event {
-    padding: 0.4em;
+    padding: 0.3em;
     border-bottom: 1px solid #ccc;
+    line-height: 1.35em;
 }
 
 .highlight_a {
-    color: white;
-    background-color: #544C2B;;
+    color: black;
+    background-color: #cfcfcf;;
 }
 .highlight_b {
-    padding: 2px;
-    color: white;
-    background-color: rgb(117, 73, 82); /* Color for func */
+    color: rgb(0, 0, 0);
+    background-color: rgb(187, 201, 224); /* Color for func */
 }
 .highlight_c {
-    color: blue;
+    color: black;
 }
 .highlight_d {
-    color: red;
+    color: darkgrey;
 }
