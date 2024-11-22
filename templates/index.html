@@ -22,6 +22,7 @@
             <button onclick="BtnReset()">Reset</button>
             <button onclick="BtnOpenEvents()">Open Events</button>
             <button onclick="BtnOpenDetections()">Open Detections</button>
+            <input type="text" id="trace" placeholder="otepad" oninput="setNewTrace(this.value)">
         </div>
 
         <div class="item" id="response">
@@ -154,6 +155,19 @@
         const data = await response.json();
     }
 
+    async function sendTrace(name) {
+        const response = await fetch('/api/trace', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "trace": name }),
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    }
+
     function BtnRefresh() {
         fetchEvents();
         fetchDetections();
@@ -169,6 +183,9 @@
     }    
     function BtnOpenDetections() {
         window.open('/api/detections', '_blank');
+    }
+    function setNewTrace(value) {
+        sendTrace(value);
     }
 
     showContent('tab1', null);  // show first tab

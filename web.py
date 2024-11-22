@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, make_response, send_from_directory
+from flask import Flask, render_template, jsonify, make_response, send_from_directory, request
 import os
 import random
 import json
@@ -73,6 +73,24 @@ def api_save():
     }
     response = make_response(jsonify(data))
     return response
+
+
+@app.route('/api/trace', methods=['GET', 'POST'])
+def api_trace():
+
+    if request.method == 'GET':
+        return jsonify({"trace": "notepad.exe"})
+    elif request.method == 'POST':
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON data provided"}), 400
+        traceName = data.get("trace", "")
+        print("Tracing now: " + traceName)
+        data = {
+            "result": "ok",
+        }
+        response = make_response(jsonify(data))
+        return response
 
 
 def getRecordingsNames(directory):
