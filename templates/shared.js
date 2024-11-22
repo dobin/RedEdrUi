@@ -15,7 +15,8 @@
             let eventCallstack = '';
             for (const [key, value] of Object.entries(event)) {
                 // header
-                if (key === 'type' || key === 'time' || key === 'pid' || key === 'tid' || key === 'krn_pid') {
+                if (key === 'type' || key === 'time' || key === 'pid' || key === 'tid' || 
+                    key === 'krn_pid' || key === 'ppid' || key === 'observe') {
                     eventHeader += `<span class="highlight_a">${key}:${value}</span> `;
                 } else if (key === 'func' || key === 'callback') {
                     eventTitle += `<span class="highlight_b"><b>${value}</b></span> `;
@@ -46,9 +47,8 @@
             }
 
             eventDiv.innerHTML = eventTitle + eventHeader + "<br>" 
-                + eventDetails + "<br>" 
-                + eventLong
-                + eventCallstack;
+            + eventDetails + (eventDetails.length != 0 ? "<br>" : "") 
+            + eventLong + eventCallstack;
 
             eventContainer.appendChild(eventDiv);
         });
