@@ -13,6 +13,7 @@
             let eventDetails = '';
             let eventLong = '';
             let eventCallstack = '';
+            let detection = '';
             for (const [key, value] of Object.entries(event)) {
                 // header
                 if (key === 'type' || key === 'time' || key === 'pid' || key === 'tid' || 
@@ -20,6 +21,11 @@
                     eventHeader += `<span class="highlight_a">${key}:${value}</span> `;
                 } else if (key === 'func' || key === 'callback') {
                     eventTitle += `<span class="highlight_b"><b>${value}</b></span> `;
+
+                // detection
+                } else if (key === 'detection') {
+                    detection = `<span class="highlight_d">detection:<br>${JSON.stringify(value, null, 0)}</span>`;
+                    eventDetails += `<span class="highlight_d">${key}:${value}</span> `;
 
                 // callstack
                 } else if (key == 'callstack') { 
@@ -48,7 +54,10 @@
 
             eventDiv.innerHTML = eventTitle + eventHeader + "<br>" 
             + eventDetails + (eventDetails.length != 0 ? "<br>" : "") 
-            + eventLong + eventCallstack;
+            + eventLong + eventCallstack
+            if (detection.length != 0) {
+                eventDiv.innerHTML += "<br>" + detection;
+            }
 
             eventContainer.appendChild(eventDiv);
         });
