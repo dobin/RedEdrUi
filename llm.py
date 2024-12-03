@@ -36,11 +36,20 @@ if __name__ == "__main__":
 recorded by an EDR, which was gathered by injecting a trusted RedEdrDll.dll DLL into the process and hooking ntdll.dll, plus ETW and kernel events.
 In that event JSON data appended below, are there any indications of shellcode execution, process injection or similar techniques?"""
 
-    models = [ "meta-llama-3.1-8b-instruct", "qwen2.5-32b-instruct" ]
-    names = ["examplemalware-1", "examplemalware-2", "examplemalware-3"]
-
-    models = [ "meta-llama-3.1-8b-instruct" ]
-    names = ["examplemalware-1"]
+    models = [
+        "mixtral-8x7b-instruct-v0.1"
+        "c4ai-command-r-08-2024",
+        "meta-llama-3.1-8b-instruct", 
+        "qwen2.5-32b-instruct" 
+    ]
+    names = ["examplemalware-1", 
+             "examplemalware-2", 
+             "examplemalware-3", 
+             "meterpreter-revhttp-staged-noautoload", 
+             "meterpreter-revhttp-staged", 
+             "meterpreter-revhttp-nonstaged-noautoload", 
+             "meterpreter-revhttp-nonstaged-autoload", 
+             "notepad"]
 
     for model in models:
         for name in names:
