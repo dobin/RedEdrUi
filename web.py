@@ -5,8 +5,8 @@ import json
 
 app = Flask(__name__)
 
-FILENAME = "data/examplemalware-1.events.json"
-FILENAME_DET = "data/examplemalware-1.detections.json"
+FILENAME = "data/dostuff.events.json"
+FILENAME_DET = "data/dostuff.detections.json"
 
 
 # Static (reused by RedEdr.exe)
@@ -50,7 +50,7 @@ def api_detections():
 @app.route('/api/stats')
 def api_stats():
     data = {
-        "events_count": random.randint(1, 100),
+        "events_count": 1,
         "detections_count": 42,
     }
     response = make_response(jsonify(data))
