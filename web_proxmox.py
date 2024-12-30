@@ -23,8 +23,8 @@ app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
 
-proxmoxApi = proxmox.ProxmoxApi()
-rededrApi = rededr.RedEdrApi()
+proxmoxApi = None
+rededrApi = None
 filesystemApi = filesystem.FilesystemApi(UPLOAD_FOLDER)
 
 execution_time = 10  # seconds
@@ -187,6 +187,16 @@ if __name__ == '__main__':
     if not os.path.exists("config.yaml"):
         shutil.copy("config.yaml.init", "config.yaml")
     load_config('config.yaml')
+
+    proxmoxApi = proxmox.ProxmoxApi(
+        config['proxmox_ip'],
+        config['proxmox_node_name'],
+        config['proxmox_template_vm_id'],
+        config['proxmox_new_vm_id'],
+        config['proxmox_new_vm_name'],
+        config['rededr_url']
+    )
+    rededrApi = rededr.RedEdrApi(config['rededr_url'])
 
     if False:
         # Prepare worker thread

@@ -1,17 +1,14 @@
 import requests
 import json
 
-#rededr_ip = "192.168.88.105:8080"
-rededr_url = "http://localhost:8080"
-
 
 class RedEdrApi:
-    def __init__(self):
-        pass
+    def __init__(self, rededr_url):
+        self.rededr_url = rededr_url
 
 
     def StartTrace(self, target_name):
-        url = rededr_url + "/api/trace"
+        url = self.rededr_url + "/api/trace"
         headers = {"Content-Type": "application/json"}
         payload = {"trace": target_name}
 
@@ -33,7 +30,7 @@ class RedEdrApi:
 
 
     def ExecFile(self, filename, file_data):
-        url = rededr_url + "/api/exec"
+        url = self.rededr_url + "/api/exec"
         files = {
             "file": (filename, file_data)
         }
@@ -48,7 +45,7 @@ class RedEdrApi:
         
 
     def GetJsonResult(self):
-        url = rededr_url + "/api/events"
+        url = self.rededr_url + "/api/events"
         try:
             response = requests.get(url)
             if response.status_code == 200:
