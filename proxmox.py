@@ -99,8 +99,12 @@ class ProxmoxApi:
 
 
     def _waitForTask(self, rollback_task, max_tries=10):
+        if not rollback_task:
+            return True
+        if 'taskid' not in rollback_task:
+            return True
+        
         task_id = rollback_task['taskid']
-
         tries = 0
         while True:
             if tries == max_tries:
