@@ -1,8 +1,6 @@
 user: rededr@pve
 password: nope
-rededr_ip: 192.168.1.2
 proxmox_ip: 192.168.1.1
 proxmox_node_name: proxmox
-proxmox_template_vm_id: "201"
-proxmox_new_vm_id: "202"
-proxmox_new_vm_name: "RedEdrTemplate"
+vm_id: "102"
+vm_ip: 192.168.1.2

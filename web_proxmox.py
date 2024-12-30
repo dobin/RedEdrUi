@@ -112,27 +112,22 @@ def DoJob(job):
 
     do_create = True
     do_rededr = False
-    do_delete = False
+    do_revert = False
 
     if do_create:
         print("InstanceVM: Initial Status: " + proxmoxApi.StatusVm())
 
-        # Check if Instance exists still (from previous run accidently)
-        if proxmoxApi.StatusVm() != "doesnotexist":
-            print("InstanceVM: is still existing?! shutdown and delete it")
-            proxmoxApi.StopVm()
-            proxmoxApi.WaitForVmStatus("stopped")
-            proxmoxApi.DeleteVm()
-            proxmoxApi.WaitForVmStatus("doesnotexist")
-
-        # Template -> Instance
-        proxmoxApi.CloneVm()
-        proxmoxApi.WaitForVmStatus("stopped")   # stopped means it exists
-        print("InstanceVM: Created: " + proxmoxApi.StatusVm())
+        # VM & Snapshot exists?
+        if proxmoxApi.StatusVm() == "doesnotexist":
+            print("InstanceVM: Does not exist? Pls create :-(")
+            return
+        if not proxmoxApi.SnapshotExists():
+            print("InstanceVM: Snapshot does not exist? Pls create :-(")
+            return
 
         # Start VM
         proxmoxApi.StartVm()
-        proxmoxApi.WaitForVmStatus("running")
+        proxmoxApi.WaitForVmStatus("started")
         print("InstanceVM: Started: " + proxmoxApi.StatusVm())
 
         # Wait for booted
@@ -150,14 +145,14 @@ def DoJob(job):
         jsonResult = rededrApi.GetJsonResult()
         filesystemApi.WriteResult(job.filename, jsonResult)
 
-    if do_delete:
+    if do_revert:
         # Stop VM
         proxmoxApi.StopVm()
         proxmoxApi.WaitForVmStatus("stopped")
         print("InstanceVM: Shutdown: " + proxmoxApi.StatusVm())
 
-        # Delete VM
-        proxmoxApi.DeleteVm()
+        # Revert VM
+        proxmoxApi.RevertVm()
         proxmoxApi.WaitForVmStatus("doesnotexist")
         print("InstanceVM: Deleted: " + proxmoxApi.StatusVm())
 
@@ -189,10 +184,8 @@ if __name__ == '__main__':
     proxmoxApi = proxmox.ProxmoxApi(
         config['proxmox_ip'],
         config['proxmox_node_name'],
-        config['proxmox_template_vm_id'],
-        config['proxmox_new_vm_id'],
-        config['proxmox_new_vm_name'],
-        config['rededr_ip']
+        config['vm_id'],
+        config['vm_ip'],
     )
     proxmoxApi.Connect(config['proxmox_ip'], config['user'], config['password'])
 
