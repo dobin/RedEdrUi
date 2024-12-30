@@ -1,0 +1,3 @@
+uploads/*
+*.yaml
+__pycache__
