@@ -194,7 +194,7 @@ if __name__ == '__main__':
         config['proxmox_new_vm_name'],
         config['rededr_ip']
     )
-    rededrApi = rededr.RedEdrApi(config['rededr_ip'])
+    rededrApi = rededr.RedEdrApi(config['proxmox_ip'])
 
     if False:
         # Prepare worker thread
