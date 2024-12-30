@@ -27,9 +27,9 @@ class FilesystemApi:
 
 
     def WriteBinary(self, filename, data):
-        fname = secure_filename(filename)
         rand = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(6))
-        file_path = os.path.join(self.upload_folder, rand + "." + fname)
+        fname = rand + "." + secure_filename(filename)
+        file_path = os.path.join(self.upload_folder, fname)
         with open(file_path, "wb") as f:
             f.write(data)
         return fname
