@@ -111,7 +111,7 @@ def DoJob(job):
     print(f"Proxmox: Processing job {job.job_id}")
 
     do_start = True
-    do_rededr = False
+    do_rededr = True
     do_revert = True
 
     if do_start:
@@ -188,11 +188,13 @@ if __name__ == '__main__':
     )
     proxmoxApi.Connect(config['proxmox_ip'], config['user'], config['password'])
 
-    if False:
+    if True:
         # Prepare worker thread
         worker_thread = Thread(target=process_jobs, daemon=True)
         worker_thread.start()
-        app.run(debug=True, threaded=True)  # Flask runs in multi-threaded mode
+
+        # And web server
+        app.run(host="0.0.0.0", port=5001, debug=False, threaded=True)  # Flask runs in multi-threaded mode
     else:
         job  = Job(1, "test")
         DoJob(job)
