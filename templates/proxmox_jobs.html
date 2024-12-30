@@ -1,0 +1,9 @@
+{% if jobs|length != 0 %}
+<ul>
+    {% for job in jobs %}
+    <li>{{job.filename}}: {{job.status}}  </li>
+    {% endfor %}
+</ul>
+{% else %}
+No jobs currently running.
+{% endif %}

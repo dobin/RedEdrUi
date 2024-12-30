@@ -48,7 +48,7 @@ class FilesystemApi:
     
 
     def ReadResult(self, filename):
-        file_path = os.path.join(self.upload_folder, filename + ".json")
+        file_path = os.path.join(self.upload_folder, filename)
         with open(file_path, "r") as f:
             data = f.read()
         return data

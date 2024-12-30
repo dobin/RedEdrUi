@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, send_from_directory, Response
 from threading import Thread
 import queue
 import time
@@ -42,6 +42,7 @@ job_queue = queue.Queue()
 
 # In-memory dictionary to store jobs by ID
 jobs = {}
+jobs = {1: Job(1, "test")}
 
 config = {}
 
@@ -52,9 +53,25 @@ def load_config(file_path):
         config = yaml.safe_load(file)
 
 
-@app.route('/upload')
-def upload_form():
-    return render_template('upload.html')
+@app.route('/')
+def index():
+    return render_template('index_proxmox.html')
+
+
+@app.route('/static/<path>')
+def send_static(path):
+    return send_from_directory('templates', path)
+
+
+@app.route('/jobs')
+def htmx_jobs():
+    return render_template('proxmox_jobs.html', jobs=jobs.values())
+
+
+@app.route('/uploaded')
+def htmx_uploaded():
+    files = filesystemApi.ListResult()
+    return render_template('proxmox_results.html', files=files)
 
 
 @app.route('/create_job', methods=['POST'])
@@ -79,13 +96,13 @@ def create_job():
         return jsonify({'message': 'Job created', 'job_id': job_id, 'file': file.filename}), 201
 
 
-@app.route('/jobs', methods=['GET'])
+@app.route('/api/jobs', methods=['GET'])
 def get_all_jobs():
     all_jobs = [{'job_id': job.job_id, 'status': job.status } for job in jobs.values()]
     return jsonify(all_jobs)
 
 
-@app.route('/job_status/<int:job_id>', methods=['GET'])
+@app.route('/api/job_status/<int:job_id>', methods=['GET'])
 def get_job_status(job_id):
     job = jobs.get(job_id)
     if job:
@@ -94,7 +111,7 @@ def get_job_status(job_id):
         return jsonify({'message': 'Job not found'}), 404
     
 
-@app.route('/result', methods=['GET'])
+@app.route('/api/result', methods=['GET'])
 def get_results():
     files = filesystemApi.ListResult()
     return jsonify(files)
@@ -103,7 +120,7 @@ def get_results():
 @app.route('/result/<fname>', methods=['GET'])
 def get_result(fname):
     data = filesystemApi.ReadResult(fname)
-    return data
+    return Response(data, content_type="application/json")
 
 
 def DoJob(job):

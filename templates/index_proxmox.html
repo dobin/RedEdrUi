@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedEdrUi</title>
+    <script src="/static/shared.js"></script>
+    <link rel="stylesheet" href="/static/design.css">
+    <script src="https://unpkg.com/htmx.org"></script>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            RedEdrUi
+        </div>
+    </header>
+
+    <h1>Upload</h1>
+
+    <p>Upload your RedEdr tool to see the detection surface. EXE only.
+        10 seconds runtime, with Internet access</p>
+
+    <p>This is not suitable for malware analysis. The VM is easily detectable.</p>
+
+    <ul>
+        <li>Analysis results (JSON & filename) are public</li>
+        <li>Uploaded file are NOT public</li>
+        <li>All IPs and network communication is logged privately</li>
+        <li>Do not misuse this service</li>
+        <li>Analysis will take 30-40 seconds</li>
+    </ul>
+
+
+    <form action="/create_job" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="file" name="file" id="file" required>
+        <button type="submit">Analyze File</button>
+    </form>
+
+
+    <h1>Uploaded</h1>
+
+    <div 
+        id="uploaded-container" 
+        hx-get="/uploaded" 
+        hx-trigger="load, every 1s">
+    </div>
+
+
+    <h1>Jobs</h1>
+
+    <div 
+        id="jobs-container" 
+        hx-get="/jobs" 
+        hx-trigger="load, every 1s">
+    </div>
+
+
+</body>
+</html>

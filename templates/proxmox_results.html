@@ -1,0 +1,7 @@
+{% if files|length != 0 %}
+<ul>
+    {% for filename in files %}
+    <li> <a href="/result/{{filename}}" target="_blank">{{filename}}</a> </li>
+    {% endfor %}
+</ul>
+{% endif %}
