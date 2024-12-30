@@ -110,11 +110,11 @@ def DoJob(job):
     job.status = "In Progress"
     print(f"Proxmox: Processing job {job.job_id}")
 
-    do_create = True
+    do_start = True
     do_rededr = False
-    do_revert = False
+    do_revert = True
 
-    if do_create:
+    if do_start:
         print("InstanceVM: Initial Status: " + proxmoxApi.StatusVm())
 
         # VM & Snapshot exists?
@@ -153,8 +153,7 @@ def DoJob(job):
 
         # Revert VM
         proxmoxApi.RevertVm()
-        proxmoxApi.WaitForVmStatus("doesnotexist")
-        print("InstanceVM: Deleted: " + proxmoxApi.StatusVm())
+        print("InstanceVM: Reverted: " + proxmoxApi.StatusVm())
 
     
     job.status = "Completed"

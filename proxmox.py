@@ -59,16 +59,22 @@ class ProxmoxApi:
     
 
     def StartVm(self):
-        self.prox.nodes(self.proxmox_node_name).qemu(self.vm_id).status.start.post()
-    
+        task = self.prox.nodes(self.proxmox_node_name).qemu(self.vm_id).status.start.post()
+        if not self._waitForTask(task):
+            print(f"Start failed")    
+
 
     def StopVm(self):
-        self.prox.nodes(self.proxmox_node_name).qemu(self.vm_id).status.stop.post()
+        task = self.prox.nodes(self.proxmox_node_name).qemu(self.vm_id).status.stop.post()
+        if not self._waitForTask(task):
+            print(f"Stop failed")
 
 
     def RevertVm(self):
-        self.prox.nodes(self.proxmox_node_name).qemu(self.vm_id).snapshot("base").rollback.post()
-
+        task = self.prox.nodes(self.proxmox_node_name).qemu(self.vm_id).snapshot("base").rollback.post()
+        if not self._waitForTask(task):
+            print(f"Rollback to snapshot failed")
+            
 
     def SnapshotExists(self):
         snapshots = self.prox.nodes(self.proxmox_node_name).qemu(self.vm_id).snapshot.get()
@@ -91,3 +97,22 @@ class ProxmoxApi:
         vmStatus = self.prox.nodes('proxmox').qemu(201).status.current.get()
         print("Status: " + vmStatus["status"])
 
+
+    def _waitForTask(self, rollback_task, max_tries=10):
+        task_id = rollback_task['taskid']
+
+        tries = 0
+        while True:
+            if tries == max_tries:
+                print(f"Rollback to snapshot failed")
+                return False
+            
+            task_status = self.prox.nodes(self.proxmox_node_name).tasks(task_id).status.get()
+            
+            if task_status['status'] == 'stopped':
+                if task_status['exitstatus'] == 'OK':
+                    return True
+                else:
+                    return False
+            tries += 1
+            time.sleep(1)
