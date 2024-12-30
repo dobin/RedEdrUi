@@ -24,17 +24,18 @@ def connect_to_port(host, port, max_retries=30):
 
 
 class ProxmoxApi:
-    def __init__(self, proxmox_ip, proxmox_node_name, template_id, new_vm_id, new_vm_name):
+    def __init__(self, proxmox_ip, proxmox_node_name, template_id, new_vm_id, new_vm_name, rededr_ip):
         self.proxmox_ip = proxmox_ip
         self.proxmox_node_name = proxmox_node_name
         self.template_id = template_id
         self.new_vm_id = new_vm_id
         self.new_vm_name = new_vm_name
+        self.rededr_ip = rededr_ip
         self.prox = None
 
 
     def IsPortOpen(self, max_retries):
-        return connect_to_port(self.new_vm_ip, 8080, max_retries=max_retries)
+        return connect_to_port(self.rededr_ip, 8080, max_retries=max_retries)
     
 
     def WaitForVmStatus(self, status, timeout=5):

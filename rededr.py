@@ -3,8 +3,8 @@ import json
 
 
 class RedEdrApi:
-    def __init__(self, rededr_url):
-        self.rededr_url = rededr_url
+    def __init__(self, rededr_ip):
+        self.rededr_url = "http://" + rededr_ip + ":8080"
 
 
     def StartTrace(self, target_name):

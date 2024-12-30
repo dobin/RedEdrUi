@@ -112,7 +112,7 @@ def DoJob(job):
 
     do_create = True
     do_rededr = False
-    do_delete = True
+    do_delete = False
 
     proxmoxApi.Connect(config['ip'], config['user'], config['password'])
     
@@ -194,9 +194,9 @@ if __name__ == '__main__':
         config['proxmox_template_vm_id'],
         config['proxmox_new_vm_id'],
         config['proxmox_new_vm_name'],
-        config['rededr_url']
+        config['rededr_ip']
     )
-    rededrApi = rededr.RedEdrApi(config['rededr_url'])
+    rededrApi = rededr.RedEdrApi(config['rededr_ip'])
 
     if False:
         # Prepare worker thread
