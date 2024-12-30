@@ -168,7 +168,6 @@ def DoJob(job):
 
 
 def process_jobs():
-    proxmoxApi.Connect(config['proxmox_ip'], config['user'], config['password'])
     while True:
         # Wait and take a job from the queue
         job = job_queue.get()
@@ -186,6 +185,7 @@ if __name__ == '__main__':
         shutil.copy("config.yaml.init", "config.yaml")
     load_config('config.yaml')
 
+    rededrApi = rededr.RedEdrApi(config['proxmox_ip'])
     proxmoxApi = proxmox.ProxmoxApi(
         config['proxmox_ip'],
         config['proxmox_node_name'],
@@ -194,7 +194,7 @@ if __name__ == '__main__':
         config['proxmox_new_vm_name'],
         config['rededr_ip']
     )
-    rededrApi = rededr.RedEdrApi(config['proxmox_ip'])
+    proxmoxApi.Connect(config['proxmox_ip'], config['user'], config['password'])
 
     if False:
         # Prepare worker thread
