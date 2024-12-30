@@ -34,6 +34,9 @@ header {
     padding: 0px;
     border: 1px solid #ccc;
 }
+.somepadding {
+    padding-left: 0.5em;
+}
 
 .container {
     display: flex; /* Makes elements inside the container align horizontally */

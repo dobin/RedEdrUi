@@ -3,34 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RedEdrUi</title>
+    <title>DerRedEdr</title>
     <script src="/static/shared.js"></script>
     <link rel="stylesheet" href="/static/design.css">
     <script src="https://unpkg.com/htmx.org"></script>
 </head>
-<body>
+<body class="somepadding">
+    
+    <h1>DerRedEdr</h1>
 
-    <header>
-        <div class="container">
-            RedEdrUi
-        </div>
-    </header>
+    <p>Upload your Red Teaming tool to see the runtime detection surface. EXE only.
+        10 seconds runtime, with Internet access. <br>
+        This is a online version of <a href="https://github.com/dobin/RedEdr">RedEDR</a>
+        (<a href="https://github.com/dobin/RedEdr">RedEDR UI</a>).
+    </p>
 
-    <h1>Upload</h1>
-
-    <p>Upload your RedEdr tool to see the detection surface. EXE only.
-        10 seconds runtime, with Internet access</p>
+    <p> 
+        Captured events:
+        <ul>
+            <li>ETW & ETW-TI (Threat Intelligence) events with KrabsETW & pplrunner</li>
+            <li>VirtualAlloc() etc. function calls with usermode ntdll.dll function hooking </li>
+            <li>Kernel callbacks</li>
+        </ul>
+        Overview of <a href="https://github.com/dobin/RedEdr/blob/master/Doc/captured_events.md">captured events</a>. 
+        Detections are in JSON key `detection`.
+    </p>
 
     <p>This is not suitable for malware analysis. The VM is easily detectable.</p>
 
     <ul>
         <li>Analysis results (JSON & filename) are public</li>
-        <li>Uploaded file are NOT public</li>
-        <li>All IPs and network communication is logged privately</li>
+        <li>Uploaded files are not public</li>
+        <li>Uploader IP and all VM network communication is logged</li>
         <li>Do not misuse this service</li>
-        <li>Analysis will take 30-40 seconds</li>
+        <li>Analysis will take around half a minute</li>
     </ul>
-
 
     <form action="/create_job" method="post" enctype="multipart/form-data">
         <label for="file">Choose a file:</label>
@@ -38,24 +45,17 @@
         <button type="submit">Analyze File</button>
     </form>
 
-
-    <h1>Uploaded</h1>
-
-    <div 
-        id="uploaded-container" 
-        hx-get="/uploaded" 
-        hx-trigger="load, every 1s">
-    </div>
-
-
-    <h1>Jobs</h1>
-
     <div 
         id="jobs-container" 
         hx-get="/jobs" 
         hx-trigger="load, every 1s">
     </div>
 
-
+    <h2>Uploaded</h2>
+    <div 
+        id="uploaded-container" 
+        hx-get="/uploaded" 
+        hx-trigger="load, every 1s">
+    </div>
 </body>
 </html>

@@ -42,7 +42,6 @@ job_queue = queue.Queue()
 
 # In-memory dictionary to store jobs by ID
 jobs = {}
-jobs = {1: Job(1, "test")}
 
 config = {}
 
@@ -78,22 +77,22 @@ def htmx_uploaded():
 def create_job():
     if 'file' not in request.files:
         return jsonify({'message': 'No file part'}), 400
-
     file = request.files['file']
     if file.filename == '':
         return jsonify({'message': 'No selected file'}), 400
+    if not file.filename.endswith('.exe'):
+        return jsonify({'message': 'Not an exe file'}), 400
 
-    if file:
-        fname = filesystemApi.WriteBinary(file.filename, file.read())
+    fname = filesystemApi.WriteBinary(file.filename, file.read())
 
-        job_id = random.randint(1, 100000)  # Generate a random job ID for simplicity
-        new_job = Job(job_id, fname)
-        jobs[job_id] = new_job
+    job_id = random.randint(1, 100000)  # Generate a random job ID for simplicity
+    new_job = Job(job_id, fname)
+    jobs[job_id] = new_job
 
-        # Add job to queue for processing
-        job_queue.put(new_job)
+    # Add job to queue for processing
+    job_queue.put(new_job)
 
-        return jsonify({'message': 'Job created', 'job_id': job_id, 'file': file.filename}), 201
+    return jsonify({'message': 'Job created', 'job_id': job_id, 'file': file.filename}), 201
 
 
 @app.route('/api/jobs', methods=['GET'])
