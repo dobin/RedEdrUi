@@ -114,8 +114,6 @@ def DoJob(job):
     do_rededr = False
     do_delete = False
 
-    proxmoxApi.Connect(config['ip'], config['user'], config['password'])
-    
     if do_create:
         print("InstanceVM: Initial Status: " + proxmoxApi.StatusVm())
 
@@ -170,7 +168,7 @@ def DoJob(job):
 
 
 def process_jobs():
-    proxmoxApi.Connect(config['ip'], config['user'], config['password'])
+    proxmoxApi.Connect(config['proxmox_ip'], config['user'], config['password'])
     while True:
         # Wait and take a job from the queue
         job = job_queue.get()
