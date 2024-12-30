@@ -179,7 +179,7 @@ if __name__ == '__main__':
         shutil.copy("config.yaml.init", "config.yaml")
     load_config('config.yaml')
 
-    rededrApi = rededr.RedEdrApi(config['proxmox_ip'])
+    rededrApi = rededr.RedEdrApi(config['vm_ip'])
     proxmoxApi = proxmox.ProxmoxApi(
         config['proxmox_ip'],
         config['proxmox_node_name'],
