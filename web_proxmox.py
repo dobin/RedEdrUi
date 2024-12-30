@@ -137,10 +137,15 @@ def DoJob(job):
             print("InstanceVM: Port is reachable")
 
     if do_rededr:
+        print("RedEdr: Start")
         rededrApi.StartTrace(job.filename)
         file_data = filesystemApi.ReadBinary(job.filename)
         rededrApi.ExecFile(job.filename, file_data)
+
+        print("RedEdr: let it execute")
         time.sleep(execution_time)  # give it 10s time to execute
+
+        print("RedEdr: Finished, gathering results")
         rededrApi.StopTrace()
         jsonResult = rededrApi.GetJsonResult()
         filesystemApi.WriteResult(job.filename, jsonResult)
