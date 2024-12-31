@@ -116,8 +116,13 @@ def get_results():
     return jsonify(files)
 
 
-@app.route('/result/<fname>', methods=['GET'])
-def get_result(fname):
+@app.route('/result', methods=['GET'])
+def get_result():
+    return render_template('recording.html')
+
+
+@app.route('/api/recordings/<fname>', methods=['GET'])
+def get_recording(fname):
     data = filesystemApi.ReadResult(fname)
     return Response(data, content_type="application/json")
 
