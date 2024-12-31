@@ -14,7 +14,7 @@ def connect_to_port(host, port, max_retries=30):
             return True
         except (socket.error, ConnectionRefusedError) as e:
             retries += 1
-            print(f"Connection attempt {retries} failed: {e}")
+            #print(f"Connection attempt {retries} failed: {e}")
             if retries < max_retries:
                 continue
             else:

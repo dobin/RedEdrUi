@@ -126,7 +126,7 @@ def DoJob(job):
     job.status = "In Progress"
     print(f"Proxmox: Processing job {job.job_id}")
 
-    do_start = True
+    do_start =  True
     do_rededr = True
     do_revert = True
 
@@ -162,7 +162,7 @@ def DoJob(job):
         time.sleep(execution_time)  # give it 10s time to execute
 
         print("RedEdr: Finished, gathering results")
-        rededrApi.StopTrace()
+        #rededrApi.StopTrace()
         jsonResult = rededrApi.GetJsonResult()
         filesystemApi.WriteResult(job.filename, jsonResult)
 
