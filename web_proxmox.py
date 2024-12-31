@@ -154,9 +154,9 @@ def DoJob(job):
 
     if do_rededr:
         print("RedEdr: Start")
-        rededrApi.StartTrace(job.filename)
+        #rededrApi.StartTrace(job.filename)
         file_data = filesystemApi.ReadBinary(job.filename)
-        rededrApi.ExecFile(job.filename, file_data)
+        rededrApi.ExecFile("malware.exe", file_data)
 
         print("RedEdr: let it execute")
         time.sleep(execution_time)  # give it 10s time to execute
