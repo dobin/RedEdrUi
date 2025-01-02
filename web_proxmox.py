@@ -27,8 +27,8 @@ proxmoxApi = None
 rededrApi = None
 filesystemApi = filesystem.FilesystemApi(UPLOAD_FOLDER)
 
-execution_time = 10  # seconds
-
+execution_time = 30  # seconds
+warmup_time = 20
 
 class Job:
     def __init__(self, job_id, filename):
@@ -156,6 +156,7 @@ def DoJob(job):
         isPortOpen = proxmoxApi.IsPortOpen(max_retries=60)  # will block
         if isPortOpen:
             print("InstanceVM: Port is reachable")
+        time.sleep(warmup_time)  # give it 5s time to warm up etw
 
     if do_rededr:
         print("RedEdr: Start")
