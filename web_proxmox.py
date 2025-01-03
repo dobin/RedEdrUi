@@ -135,6 +135,9 @@ def DoJob(job):
     do_rededr = True
     do_revert = True
 
+    # Always connect wird, or it may be timeouted
+    proxmoxApi.Connect()
+
     if do_start:
         print("InstanceVM: Initial Status: " + proxmoxApi.StatusVm())
 
@@ -212,8 +215,9 @@ if __name__ == '__main__':
         config['proxmox_node_name'],
         config['vm_id'],
         config['vm_ip'],
+        config['user'],
+        config['password']
     )
-    proxmoxApi.Connect(config['proxmox_ip'], config['user'], config['password'])
 
     if True:
         # Prepare worker thread

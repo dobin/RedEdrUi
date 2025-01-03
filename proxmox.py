@@ -24,11 +24,13 @@ def connect_to_port(host, port, max_retries=30):
 
 
 class ProxmoxApi:
-    def __init__(self, proxmox_ip, proxmox_node_name, vm_id, vm_ip):
+    def __init__(self, proxmox_ip, proxmox_node_name, vm_id, vm_ip, user, password):
         self.proxmox_ip = proxmox_ip
         self.proxmox_node_name = proxmox_node_name
         self.vm_id = vm_id
         self.vm_ip = vm_ip
+        self.user = user
+        self.password = password
         self.prox = None
 
 
@@ -46,8 +48,12 @@ class ProxmoxApi:
             n += 1
 
 
-    def Connect(self, ip, user, password):
-        self.prox = ProxmoxAPI(ip, user=user, password=password, verify_ssl=False)
+    def Connect(self):
+        self.prox = ProxmoxAPI(
+            self.proxmox_ip, 
+            user=self.user, 
+            password=self.password, 
+            verify_ssl=False)
 
 
     def StatusVm(self):
