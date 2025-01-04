@@ -2,7 +2,7 @@
 <ul>
     {% for filename in files %}
     <li> <a href="/result?name={{filename}}" target="_blank">{{filename}}</a> 
-        (<a href="/api/recordings/{{filename}}" target="_blank">raw</a>)
+        (<a href="/api/recordings/{{filename}}" target="_blank">json raw</a>)
     </li>
     {% endfor %}
 </ul>
