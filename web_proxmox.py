@@ -29,7 +29,7 @@ rededrApi = None
 filesystemApi = filesystem.FilesystemApi(UPLOAD_FOLDER)
 
 execution_time = 30  # seconds
-warmup_time = 20
+warmup_time = 10  # for ETW to warm up
 
 # Logging
 logger = logging.getLogger('custom_logger')
