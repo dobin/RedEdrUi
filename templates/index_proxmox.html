@@ -22,7 +22,7 @@
         Captured events:
         <ul>
             <li>ETW & ETW-TI (Threat Intelligence) events with KrabsETW & pplrunner</li>
-            <li>VirtualAlloc() etc. function calls with usermode ntdll.dll function hooking </li>
+            <li>Usermode ntdll.dll hooking (NtVirtualProtect() etc) </li>
             <li>Kernel callbacks</li>
         </ul>
         Overview of <a href="https://github.com/dobin/RedEdr/blob/master/Doc/captured_events.md">captured events</a>. 
@@ -36,7 +36,7 @@
         <li>Uploaded files are not public</li>
         <li>Uploader IP and all VM network communication is logged</li>
         <li>Do not misuse this service</li>
-        <li>Analysis will take around half a minute</li>
+        <li>Analysis will take about a minute</li>
     </ul>
 
     <form action="/create_job" method="post" enctype="multipart/form-data">
