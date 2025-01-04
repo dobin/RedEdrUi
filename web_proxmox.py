@@ -7,6 +7,7 @@ import os
 import shutil
 import yaml
 import string
+import logging
 
 import proxmox
 import rededr
@@ -29,6 +30,16 @@ filesystemApi = filesystem.FilesystemApi(UPLOAD_FOLDER)
 
 execution_time = 30  # seconds
 warmup_time = 20
+
+# Logging
+logger = logging.getLogger('custom_logger')
+console_handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+
+# Add handler to logger
+logger.addHandler(console_handler)
+logger.setLevel(logging.INFO)
 
 class Job:
     def __init__(self, job_id, filename):
@@ -129,7 +140,7 @@ def get_recording(fname):
 
 def DoJob(job):
     job.status = "In Progress"
-    print(f"Proxmox: Processing job {job.job_id}")
+    logger.info(f"Proxmox: Processing job {job.job_id}")
 
     do_start =  True
     do_rededr = True
@@ -139,38 +150,38 @@ def DoJob(job):
     proxmoxApi.Connect()
 
     if do_start:
-        print("InstanceVM: Initial Status: " + proxmoxApi.StatusVm())
+        logger.info("InstanceVM: Initial Status: " + proxmoxApi.StatusVm())
 
         # VM & Snapshot exists?
         if proxmoxApi.StatusVm() == "doesnotexist":
-            print("InstanceVM: Does not exist? Pls create :-(")
+            logger.info("InstanceVM: Does not exist? Pls create :-(")
             return
         if not proxmoxApi.SnapshotExists():
-            print("InstanceVM: Snapshot does not exist? Pls create :-(")
+            logger.info("InstanceVM: Snapshot does not exist? Pls create :-(")
             return
 
         # Start VM
         proxmoxApi.StartVm()
         proxmoxApi.WaitForVmStatus("started")
-        print("InstanceVM: Started: " + proxmoxApi.StatusVm())
+        logger.info("InstanceVM: Started: " + proxmoxApi.StatusVm())
 
         # Wait for booted
         #   17s on LAN proxmox
         isPortOpen = proxmoxApi.IsPortOpen(max_retries=60)  # will block
         if isPortOpen:
-            print("InstanceVM: Port is reachable")
+            logger.info("InstanceVM: Port is reachable")
         time.sleep(warmup_time)  # give it 5s time to warm up etw
 
     if do_rededr:
-        print("RedEdr: Start")
+        logger.info("RedEdr: Start")
         #rededrApi.StartTrace(job.filename)
         file_data = filesystemApi.ReadBinary(job.filename)
         rededrApi.ExecFile("malware.exe", file_data)
 
-        print("RedEdr: let it execute")
+        logger.info("RedEdr: let it execute")
         time.sleep(execution_time)  # give it 10s time to execute
 
-        print("RedEdr: Finished, gathering results")
+        logger.info("RedEdr: Finished, gathering results")
         #rededrApi.StopTrace()
         jsonResult = rededrApi.GetJsonResult()
         filesystemApi.WriteResult(job.filename, jsonResult)
@@ -179,16 +190,16 @@ def DoJob(job):
         # Stop VM
         proxmoxApi.StopVm()
         proxmoxApi.WaitForVmStatus("stopped")
-        print("InstanceVM: Shutdown: " + proxmoxApi.StatusVm())
+        logger.info("InstanceVM: Shutdown: " + proxmoxApi.StatusVm())
 
         # Revert VM
         proxmoxApi.RevertVm()
-        print("InstanceVM: Reverted: " + proxmoxApi.StatusVm())
+        logger.info("InstanceVM: Reverted: " + proxmoxApi.StatusVm())
 
     
     job.status = "Completed"
 
-    print(f"Job {job.job_id} completed")
+    logger.info(f"Job {job.job_id} completed")
 
 
 def process_jobs():
