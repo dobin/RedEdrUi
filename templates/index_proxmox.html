@@ -12,8 +12,7 @@
     
     <h1>DerRedEdr</h1>
 
-    <p>Upload your Red Teaming tool to see the runtime detection surface. EXE only.
-        10 seconds runtime, with Internet access. <br>
+    <p>Upload your Red Teaming tool to see the runtime detection surface. <br>
         This is a online version of <a href="https://github.com/dobin/RedEdr">RedEDR</a>
         (<a href="https://github.com/dobin/RedEdr">RedEDR UI</a>).
     </p>
@@ -29,14 +28,18 @@
         Detections are in JSON key `detection`.
     </p>
 
-    <p>This is not suitable for malware analysis. The VM is easily detectable.</p>
+    <h2>Upload</h2>
 
     <ul>
-        <li>Analysis results (JSON & filename) are public</li>
+        <li>.exe only</li>
+        <li>10 seconds VM runtime</li>
+        <li>Internet access</li>
+        <li>Analysis results are public (JSON & filename)</li>
         <li>Uploaded files are not public</li>
         <li>Uploader IP and all VM network communication is logged</li>
         <li>Do not misuse this service</li>
         <li>Analysis will take about a minute</li>
+        <li>Not really suitable for malware analysis</li>
     </ul>
 
     <form action="/create_job" method="post" enctype="multipart/form-data">
