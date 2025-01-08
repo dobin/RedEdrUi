@@ -9,9 +9,9 @@ import yaml
 import string
 import logging
 
-import proxmox
-import rededr
-import filesystem
+import proxmoxapi
+import rededrapi
+import filesystemapi
 
 app = Flask(__name__)
 
@@ -26,7 +26,7 @@ UPLOAD_FOLDER = 'uploads'
 
 proxmoxApi = None
 rededrApi = None
-filesystemApi = filesystem.FilesystemApi(UPLOAD_FOLDER)
+filesystemApi = filesystemapi.FilesystemApi(UPLOAD_FOLDER)
 
 execution_time = 30  # seconds
 warmup_time = 10  # for ETW to warm up
@@ -65,7 +65,7 @@ def load_config(file_path):
 
 @app.route('/')
 def index():
-    return render_template('index_proxmox.html')
+    return render_template('index.html')
 
 
 @app.route('/static/<path>')
@@ -75,13 +75,13 @@ def send_static(path):
 
 @app.route('/jobs')
 def htmx_jobs():
-    return render_template('proxmox_jobs.html', jobs=jobs.values())
+    return render_template('jobs.html', jobs=jobs.values())
 
 
 @app.route('/uploaded')
 def htmx_uploaded():
     files = filesystemApi.ListResult()
-    return render_template('proxmox_results.html', files=files)
+    return render_template('results.html', files=files)
 
 
 @app.route('/create_job', methods=['POST'])
@@ -220,8 +220,8 @@ if __name__ == '__main__':
         shutil.copy("config.yaml.init", "config.yaml")
     load_config('config.yaml')
 
-    rededrApi = rededr.RedEdrApi(config['vm_ip'])
-    proxmoxApi = proxmox.ProxmoxApi(
+    rededrApi = rededrapi.RedEdrApi(config['vm_ip'])
+    proxmoxApi = proxmoxapi.ProxmoxApi(
         config['proxmox_ip'],
         config['proxmox_node_name'],
         config['vm_id'],

@@ -13,11 +13,11 @@ FILENAME_DET = "data/dostuff.detections.json"
 
 @app.route('/')
 def index():
-    return render_template('index_mock.html')
+    return render_template('mock_index.html')
 
 @app.route('/recordings')
 def recordings():
-    return render_template('recording.html')
+    return render_template('mock_recording.html')
 
 @app.route('/static/<path>')
 def send_static(path):
