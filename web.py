@@ -8,6 +8,7 @@ import shutil
 import yaml
 import string
 import logging
+import sys
 
 import proxmoxapi
 import rededrapi
@@ -230,13 +231,15 @@ if __name__ == '__main__':
         config['password']
     )
 
-    if True:
+    # if we have a argument
+    if len(sys.argv) == 2:
+        job  = Job(1, sys.argv[1])
+        DoJob(job)
+    else:
         # Prepare worker thread
         worker_thread = Thread(target=process_jobs, daemon=True)
         worker_thread.start()
 
         # And web server
-        app.run(host="0.0.0.0", port=5001, debug=False, threaded=True)  # Flask runs in multi-threaded mode
-    else:
-        job  = Job(1, "test")
-        DoJob(job)
+        # Flask runs in multi-threaded mode
+        app.run(host="0.0.0.0", port=5001, debug=False, threaded=True)
