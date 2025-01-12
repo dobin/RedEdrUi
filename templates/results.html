@@ -1,9 +1,37 @@
 {% if files|length != 0 %}
 <ul>
-    {% for filename in files %}
-    <li> <a href="/result?name={{filename}}" target="_blank">{{filename}}</a> 
-        (<a href="/api/recordings/{{filename}}" target="_blank">json raw</a>)
-    </li>
+    {% for file in files %}
+    <table border="1">
+        <tr>
+            <th>
+                Recorded events
+            </th>
+            <th>
+                JSON Raw
+            </th>
+            <th>
+                Size
+            </th>
+            <th>
+                Date
+            </th>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="/result?name={{file.filename}}" target="_blank">{{file.filename}}</a> 
+            </td>
+            <td>
+                <a href="/api/recordings/{{file.filename}}" target="_blank">json</a>
+            </td>
+            <td>
+                {{file.size}}kb
+            </td>
+            <td>
+                {{file.date}}
+            </td>
+        </tr>
+    </table>
     {% endfor %}
 </ul>
 {% endif %}

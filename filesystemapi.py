@@ -2,6 +2,16 @@ from werkzeug.utils import secure_filename
 import random
 import string
 import os
+from datetime import datetime
+
+class FileInfo:
+    def __init__(self, filename, size, date):
+        self.filename = filename
+        self.size = size
+        self.date = date
+
+    def __repr__(self):
+        return f"FileInfo(filename={self.filename}, size={self.size}, date={self.date})"
 
 
 class FilesystemApi:
@@ -36,7 +46,17 @@ class FilesystemApi:
 
 
     def ListResult(self):
-        files = [f for f in os.listdir(self.upload_folder) if f.endswith('.json')]
+        files = []
+        for entry in os.scandir(self.upload_folder):
+            if entry.is_file():
+                if not entry.name.endswith('.json'):
+                    continue
+                file_info = FileInfo(
+                    filename=entry.name,
+                    size=int(entry.stat().st_size / 1024),
+                    date=datetime.fromtimestamp(entry.stat().st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+                )
+                files.append(file_info)
         return files
 
 

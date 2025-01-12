@@ -239,6 +239,11 @@ if __name__ == '__main__':
         job  = Job(1, sys.argv[1])
         DoJob(job)
     else:
+        if False:
+            job_id = random.randint(1, 100000)  # Generate a random job ID for simplicity
+            new_job = Job(job_id, "test.exe")
+            jobs[job_id] = new_job
+
         # Prepare worker thread
         worker_thread = Thread(target=process_jobs, daemon=True)
         worker_thread.start()
