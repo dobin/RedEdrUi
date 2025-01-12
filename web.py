@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, send_from_directory, Response
+from flask import Flask, jsonify, request, render_template, send_from_directory, Response, redirect
 from threading import Thread
 import queue
 import time
@@ -95,8 +95,10 @@ def create_job():
     if not file.filename.endswith('.exe'):
         return jsonify({'message': 'Not an exe file'}), 400
 
+    # write to file system and get the filename
     fname = filesystemApi.WriteBinary(file.filename, file.read())
 
+    # create job
     job_id = random.randint(1, 100000)  # Generate a random job ID for simplicity
     new_job = Job(job_id, fname)
     jobs[job_id] = new_job
@@ -104,7 +106,8 @@ def create_job():
     # Add job to queue for processing
     job_queue.put(new_job)
 
-    return jsonify({'message': 'Job created', 'job_id': job_id, 'file': file.filename}), 201
+    #return jsonify({'message': 'Job created', 'job_id': job_id, 'file': file.filename}), 201
+    return redirect("/")
 
 
 @app.route('/api/jobs', methods=['GET'])
