@@ -133,7 +133,7 @@ def get_results():
 
 @app.route('/result', methods=['GET'])
 def get_result():
-    return render_template('recording.html')
+    return render_template('mock_recording.html')
 
 
 @app.route('/api/recordings/<fname>', methods=['GET'])
