@@ -4,6 +4,11 @@ function displayEvents(events) {
     const eventContainer = document.getElementById('eventContainer');
     eventContainer.innerHTML = ''; // Clear previous content
 
+    let s_kernel = 0;
+    let s_etw = 0;
+    let s_dll = 0;
+    let s_etwti = 0;
+
     events.forEach(event => {
         const eventDiv = document.createElement('div');
         eventDiv.classList.add('event');
@@ -14,10 +19,20 @@ function displayEvents(events) {
         let eventLong = '';
         let eventCallstack = '';
         let detections = '';
-        let etwti_startaddr = 0;
         for ([key, value] of Object.entries(event)) {
             if (typeof value === "number") {
                 value = myHex(value);
+            }
+            
+            // stats
+            if (key == 'type') {
+                if (value == 'kernel') {
+                    s_kernel++;
+                } else if (value == 'etw') {
+                    s_etw++;
+                } else if (value == 'dll') {
+                    s_dll++;
+                }
             }
 
             // header
@@ -87,6 +102,9 @@ function displayEvents(events) {
 
         eventContainer.appendChild(eventDiv);
     });
+
+    //console.log(s_dll, s_etw, s_kernel);
+    return {"kernel": s_kernel, "etw": s_etw, "dll": s_dll};
 }
 
 // Function to display events in Tab 1

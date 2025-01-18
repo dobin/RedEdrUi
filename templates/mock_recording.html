@@ -9,6 +9,11 @@
 </head>
 <body>
 
+<div class="header" id="header">
+Kernel: 0 ETW: 0 DLL: 0
+</div>
+
+
 <div class="content" id="content">
     <div id="tab1" class="tab-content">
         <div id="eventContainer"></div>
@@ -22,7 +27,10 @@
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        displayEvents(data);
+        let stats = displayEvents(data);
+        const divElement = document.getElementById("header");
+        divElement.textContent = `Kernel: ${stats['kernel']} ETW: ${stats['etw']} DLL: ${stats['dll']}`;
+        console.log(stats);
     }
 
     const url = new URL(window.location.href);
