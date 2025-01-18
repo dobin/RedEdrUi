@@ -1,7 +1,7 @@
 {% if files|length != 0 %}
 <ul>
-    {% for file in files %}
-    <table border="1">
+    
+    <table border="0">
         <tr>
             <th>
                 Recorded events
@@ -16,7 +16,7 @@
                 Date
             </th>
         </tr>
-
+        {% for file in files %}
         <tr>
             <td>
                 <a href="/result?name={{file.filename}}" target="_blank">{{file.filename}}</a> 
@@ -31,7 +31,8 @@
                 {{file.date}}
             </td>
         </tr>
+        {% endfor %}
     </table>
-    {% endfor %}
+    
 </ul>
 {% endif %}
