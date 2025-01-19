@@ -77,7 +77,6 @@ def api_save():
 
 @app.route('/api/trace', methods=['GET', 'POST'])
 def api_trace():
-
     if request.method == 'GET':
         return jsonify({"trace": "notepad.exe"})
     elif request.method == 'POST':
@@ -91,7 +90,12 @@ def api_trace():
         }
         response = make_response(jsonify(data))
         return response
+    
 
+@app.route('/api/log', methods=['GET'])
+def api_log():
+    return jsonify([ "log line 1", "log line 2", "log line 3" ])
+    
 
 def getRecordingsNames(directory):
     try:

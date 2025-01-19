@@ -42,13 +42,24 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 logger.setLevel(logging.INFO)
 
+
 class Job:
     def __init__(self, job_id, filename):
         self.job_id = job_id
         self.status = "Created"
         self.filename = filename
+        self.logs = []
 
 
+    def to_dict(self):
+        return {
+            "job_id": self.job_id,
+            "status": self.status,
+            "filename": self.filename,
+            "logs": self.logs
+        }
+    
+    
 # Queue to hold jobs
 job_queue = queue.Queue()
 
@@ -124,6 +135,15 @@ def get_job_status(job_id):
     else:
         return jsonify({'message': 'Job not found'}), 404
     
+    
+@app.route('/api/job/<int:job_id>', methods=['GET'])
+def get_job(job_id):
+    job = jobs.get(job_id)
+    if job:
+        return jsonify(job.to_dict())
+    else:
+        return jsonify({'message': 'Job not found'}), 404
+    
 
 @app.route('/api/result', methods=['GET'])
 def get_results():
@@ -142,7 +162,7 @@ def get_recording(fname):
     return Response(data, content_type="application/json")
 
 
-def DoJob(job):
+def DoJob(job: Job):
     job.status = "In Progress"
     logger.info(f"Proxmox: Processing job {job.job_id}")
 
@@ -189,6 +209,10 @@ def DoJob(job):
         #rededrApi.StopTrace()
         jsonResult = rededrApi.GetJsonResult()
         filesystemApi.WriteResult(job.filename, jsonResult)
+
+        logs = rededrApi.GetLog()
+        job.logs = logs
+        
 
     if do_revert:
         # Stop VM
@@ -239,9 +263,10 @@ if __name__ == '__main__':
         job  = Job(1, sys.argv[1])
         DoJob(job)
     else:
-        if False:
-            job_id = random.randint(1, 100000)  # Generate a random job ID for simplicity
+        if True:
+            job_id = 1
             new_job = Job(job_id, "test.exe")
+            new_job.logs = [ "log line 1", "log line 2", "log line 3" ]
             jobs[job_id] = new_job
 
         # Prepare worker thread
@@ -250,4 +275,4 @@ if __name__ == '__main__':
 
         # And web server
         # Flask runs in multi-threaded mode
-        app.run(host="0.0.0.0", port=5001, debug=False, threaded=True)
+        app.run(host="0.0.0.0", port=5001, debug=True, threaded=True)
