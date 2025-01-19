@@ -54,7 +54,7 @@ class FilesystemApi:
                 file_info = FileInfo(
                     filename=entry.name,
                     size=int(entry.stat().st_size / 1024),
-                    date=datetime.fromtimestamp(entry.stat().st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+                    date=datetime.fromtimestamp(entry.stat().st_mtime).strftime('%Y.%m.%d')
                 )
                 files.append(file_info)
         return files
