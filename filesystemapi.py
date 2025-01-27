@@ -66,6 +66,12 @@ class FilesystemApi:
             f.write(data)
         return True
     
+    def WriteLog(self, filename, data):
+        file_path = os.path.join(self.upload_folder, filename + ".log")
+        with open(file_path, "w") as f:
+            f.write(data)
+        return True
+    
 
     def ReadResult(self, filename):
         file_path = os.path.join(self.upload_folder, filename)

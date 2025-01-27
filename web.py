@@ -211,6 +211,7 @@ def DoJob(job: Job):
         filesystemApi.WriteResult(job.filename, jsonResult)
 
         logs = rededrApi.GetLog()
+        filesystemApi.WriteLog(job.filename, logs)
         job.logs = logs
         
 
