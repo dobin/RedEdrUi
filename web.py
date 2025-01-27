@@ -264,7 +264,7 @@ if __name__ == '__main__':
         job  = Job(1, sys.argv[1])
         DoJob(job)
     else:
-        if True:
+        if False:
             job_id = 1
             new_job = Job(job_id, "test.exe")
             new_job.logs = [ "log line 1", "log line 2", "log line 3" ]
