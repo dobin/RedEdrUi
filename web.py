@@ -49,6 +49,7 @@ class Job:
         self.status = "Created"
         self.filename = filename
         self.logs = []
+        self.duration_startvm = 0
 
 
     def to_dict(self):
@@ -173,6 +174,7 @@ def DoJob(job: Job):
     # Always connect wird, or it may be timeouted
     proxmoxApi.Connect()
 
+    start_time = time.time()
     if do_start:
         logger.info("InstanceVM: Initial Status: " + proxmoxApi.StatusVm())
 
@@ -198,6 +200,7 @@ def DoJob(job: Job):
         isPortOpen = proxmoxApi.IsPortOpen(max_retries=60)  # will block
         if isPortOpen:
             logger.info("InstanceVM: Port is reachable")
+            job.duration_startvm = time.time() - start_time
         else:
             logger.info("InstanceVM: Port is not reachable")
             job.status = "Error: Start vm port"
@@ -230,7 +233,6 @@ def DoJob(job: Job):
         if logs is not None:
             filesystemApi.WriteLog(job.filename, logs)
             job.logs = logs
-        
 
     if do_revert:
         # Stop VM
@@ -241,7 +243,6 @@ def DoJob(job: Job):
         # Revert VM
         proxmoxApi.RevertVm()
         logger.info("InstanceVM: Reverted: " + proxmoxApi.StatusVm())
-
     
     job.status = "Completed"
 
