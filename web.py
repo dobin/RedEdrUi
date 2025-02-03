@@ -179,9 +179,11 @@ def DoJob(job: Job):
         # VM & Snapshot exists?
         if proxmoxApi.StatusVm() == "doesnotexist":
             logger.info("InstanceVM: Does not exist? Pls create :-(")
+            job.status = "Error: Start vm instance"
             return
         if not proxmoxApi.SnapshotExists():
             logger.info("InstanceVM: Snapshot does not exist? Pls create :-(")
+            job.status = "Error: Start vm snapshot"
             return
 
         # Start VM
@@ -191,16 +193,24 @@ def DoJob(job: Job):
 
         # Wait for booted
         #   17s on LAN proxmox
+        #   36s on Hetzner proxmox unoptimized
+        #   16s on Hetzner proxmox optimized
         isPortOpen = proxmoxApi.IsPortOpen(max_retries=60)  # will block
         if isPortOpen:
             logger.info("InstanceVM: Port is reachable")
+        else:
+            logger.info("InstanceVM: Port is not reachable")
+            job.status = "Error: Start vm port"
+            return
         time.sleep(warmup_time)  # give it 5s time to warm up etw
 
     if do_rededr:
         logger.info("RedEdr: Start")
         #rededrApi.StartTrace(job.filename)
         file_data = filesystemApi.ReadBinary(job.filename)
-        rededrApi.ExecFile("malware.exe", file_data)
+        if not rededrApi.ExecFile("malware.exe", file_data):
+            job.status = "Error: RedEdr exec"
+            return
 
         logger.info("RedEdr: let it execute")
         time.sleep(execution_time)  # give it 10s time to execute
@@ -208,11 +218,18 @@ def DoJob(job: Job):
         logger.info("RedEdr: Finished, gathering results")
         #rededrApi.StopTrace()
         jsonResult = rededrApi.GetJsonResult()
+        if jsonResult is None:
+            job.status = "Error: RedEdr json"
+            return
         filesystemApi.WriteResult(job.filename, jsonResult)
 
         logs = rededrApi.GetLog()
-        filesystemApi.WriteLog(job.filename, logs)
-        job.logs = logs
+        if logs is None:
+            job.status = "Error: RedEdr log"
+            return
+        if logs is not None:
+            filesystemApi.WriteLog(job.filename, logs)
+            job.logs = logs
         
 
     if do_revert:
